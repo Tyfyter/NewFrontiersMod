@@ -1,3 +1,6 @@
-
 *.csproj
 Properties/launchSettings.json
+.vs/*
+obj/*
+bin/*
+Thumbs.db
