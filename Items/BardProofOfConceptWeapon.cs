@@ -11,6 +11,7 @@ using Terraria.ModLoader.IO;
 
 namespace NewFrontiersMod.Items {
     public abstract class BardWeapon : ModItem {
+        public virtual Note DefaultNote => Note.Default;
         bool prevClick;
         public override bool CloneNewInstances => true;
         public int noteIndex;
@@ -78,9 +79,9 @@ namespace NewFrontiersMod.Items {
         
         public Note GetNextNote(int index) {
             if (MusicSheet?.modItem is BardSong song && !MusicSheet.IsAir) {
-                return song.GetNextNote(index);
+                return song.GetNextNote(index)??DefaultNote;
             }
-            return Note.Default;
+            return DefaultNote;
         }
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack) {
             bool useRestart = false;
@@ -99,6 +100,7 @@ namespace NewFrontiersMod.Items {
                             noteTime = note.delay;
                             SpawnProjectile(player, note, position, new Vector2(speedX, speedY), (int)(damage * note.damageMult), knockBack);
                         } else {
+                            SpawnProjectile(player, Note.Default, position, new Vector2(speedX, speedY), damage - (damage/3), knockBack);
                             noteTime = -precision;
                         }
                     }
@@ -112,10 +114,10 @@ namespace NewFrontiersMod.Items {
         public abstract void SpawnProjectile(Player player, Note note, Vector2 position, Vector2 velocity, int damage, float knockBack);
     }
     public abstract class BardSong : ModItem {
-        public abstract Note GetNextNote(int index);
+        public abstract Note? GetNextNote(int index);
     }
     public struct Note {
-        public static Note Default => new Note(0, 65);
+        public static Note Default => new Note(0, 25);
         public int type;
         public int extraCount;
         public BardAttackMode mode;
@@ -140,6 +142,7 @@ namespace NewFrontiersMod.Items {
         }
         public override void SetDefaults() {
             item.damage = 17;
+            item.noMelee = true;
             item.useStyle = 5;
             item.useTime = 2;
             item.useAnimation = 17;
@@ -174,31 +177,31 @@ namespace NewFrontiersMod.Items {
         }
     }
     public class BardProofOfConceptSong : BardSong {
-        public override Note GetNextNote(int index) {
+        public override Note? GetNextNote(int index) {
             return new Note(index % 3, 45, extraCount:index);
         }
     }
     public class BardExampleSong : BardSong {
-        public override Note GetNextNote(int index) {
+        public override Note? GetNextNote(int index) {
             switch (index % 11) {
                 case 0:
                 case 3:
                 case 6:
-                return new Note(0, 25, 0.5f, damageMult:(index / 11)+1);
+                return new Note(0, 25, 0.5f, damageMult:(index / 11f)+1);
                 case 1:
                 case 4:
                 case 7:
-                return new Note(1, 25, 0.25f, damageMult:(index / 11)+1);
+                return new Note(1, 25, 0.25f, damageMult:(index / 11f)+1);
                 case 2:
                 case 5:
                 case 10:
-                return new Note(2, 60, 0.1f, damageMult:(index / 11)+1);
+                return new Note(2, 60, 0.1f, damageMult:(index / 11f)+1);
                 case 8:
-                return new Note(2, 40, 0.1f, damageMult:(index / 11)+1);
+                return new Note(2, 40, 0.1f, damageMult:(index / 11f)+1);
                 case 9:
-                return new Note(1, 40, 0.25f, damageMult:(index / 11)+1);
+                return new Note(1, 40, 0.25f, damageMult:(index / 11f)+1);
             }
-            return Note.Default;
+            return null;
         }
     }
 }
