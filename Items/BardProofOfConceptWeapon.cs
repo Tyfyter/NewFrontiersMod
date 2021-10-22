@@ -16,7 +16,7 @@ namespace NewFrontiersMod.Items {
         public int noteIndex;
         public int noteTime;
         public bool restart = false;
-        public const int precision = 10;
+        public const int precision = 5;
         public Item MusicSheet { get; protected set; }
         /// <summary>
         /// 
@@ -68,7 +68,8 @@ namespace NewFrontiersMod.Items {
                 noteTime--;
                 bool shouldPlay = noteTime < precision;
                 for (int i = 0; i < 60; i++) {
-                    Dust.NewDustPerfect(player.Center + new Vector2(noteTime + precision, 0).RotatedBy(0.10471975511965977461542144610932 * i), shouldPlay ? DustID.Fire : DustID.DungeonWater, Vector2.Zero).noGravity = true;
+                    Dust.NewDustPerfect(player.Center + new Vector2(precision * 2, 0).RotatedBy(0.10471975511965977461542144610932 * i), DustID.DungeonWater, Vector2.Zero, Scale:0.5f).noGravity = true;
+                    Dust.NewDustPerfect(player.Center + new Vector2(noteTime + precision, 0).RotatedBy(0.10471975511965977461542144610932 * i), shouldPlay ? DustID.Fire : DustID.DungeonWater, Vector2.Zero, Scale:0.5f).noGravity = true;
                 }
             } else if(player.itemAnimation == 0){
                 restart = true;
@@ -183,18 +184,19 @@ namespace NewFrontiersMod.Items {
                 case 0:
                 case 3:
                 case 6:
-                return new Note(0, 30, 0.5f, damageMult:(index / 11)+1);
+                return new Note(0, 25, 0.5f, damageMult:(index / 11)+1);
                 case 1:
                 case 4:
                 case 7:
-                case 9:
-                return new Note(0, 30, 0.25f, damageMult:(index / 11)+1);
+                return new Note(1, 25, 0.25f, damageMult:(index / 11)+1);
                 case 2:
                 case 5:
                 case 10:
-                return new Note(0, 60, 0.1f, damageMult:(index / 11)+1);
+                return new Note(2, 60, 0.1f, damageMult:(index / 11)+1);
                 case 8:
-                return new Note(0, 40, 0.1f, damageMult:(index / 11)+1);
+                return new Note(2, 40, 0.1f, damageMult:(index / 11)+1);
+                case 9:
+                return new Note(1, 40, 0.25f, damageMult:(index / 11)+1);
             }
             return Note.Default;
         }
