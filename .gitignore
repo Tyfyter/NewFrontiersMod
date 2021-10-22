@@ -4,3 +4,5 @@ Properties/launchSettings.json
 obj/*
 bin/*
 Thumbs.db
+*.user
+*.sln
